@@ -4,6 +4,6 @@
 
 
 
-int main(char * args[], int argC) {
+int main(int argC, char ** args) {
     printf("Hello World\n");
 }

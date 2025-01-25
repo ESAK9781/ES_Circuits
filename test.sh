@@ -1,2 +1,2 @@
 sh comp.sh
-./OpenCircuits
+./ES_Circuits

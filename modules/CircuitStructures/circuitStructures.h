@@ -24,8 +24,10 @@ typedef struct {
 
 // a single component in a circuit
 typedef struct {
-    int numConnections;
     NodeIndex * connections;
+    int numConnections;
+    int allocatedConnections;
+
     void * circuit; // a pointer to the circuit that this component is a part of
 
     float currentThrough;
@@ -54,10 +56,13 @@ typedef struct {
 
     CircuitLine * renderLines;
     int numRenderLines;
+    int allocatedRenderLines;
+
     void * circuit; // a pointer to the circuit that this node is a part of
 
     ComponentIndex * components;
     int numComponents;
+    int allocatedComponents;
 
     char label[LABEL_SIZE]; // a label for this part of the circuit
 
@@ -67,9 +72,11 @@ typedef struct {
 typedef struct {
     CircuitComponent ** components; // list with pointers to all of the components in this circuit
     int numComponents;
+    int allocatedComponents;
 
     CircuitNode ** nodes; // list with pointers to all of the nodes in this circuit
     int numNodes;
+    int allocatedNodes;
 
     CircuitNode * ground; // this will still be in the node list, this is just a pointer to its location in memory
 } Circuit;
@@ -158,12 +165,20 @@ void freeNode(CircuitNode * node);
 void addComponent(Circuit * circuit, CircuitComponent * component);
 
 /**
+ * @brief Registers a new node with the circuit
+ * @param circuit Pointer to the circuit to register the node with
+ * @param node Pointer to the node to register with the circuit
+ * @return none
+ */
+void addNode(Circuit * circuit, CircuitNode * node);
+
+/**
  * @brief Creates a node linking two circuit components and adds it to the circuit
  * @param a Pointer to the first component 
  * @param b Pointer to the second component
- * @return none
+ * @return Pointer to the new connecting node
  */
-void linkComponents(CircuitComponent * a, CircuitComponent * b);
+CircuitNode * linkComponents(CircuitComponent * a, CircuitComponent * b);
 
 /**
  * @brief Link a single component and a single node together

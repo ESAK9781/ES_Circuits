@@ -1,6 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
 
 #include "circuitStructures.h"
+#include "../Util/util.h"
 #include "./../../settings.h"
 
 
@@ -143,15 +146,87 @@ void freeNode(CircuitNode * node) {
  * @param component Pointer to the component to register with the circuit
  * @return none
  */
-void addComponent(Circuit * circuit, CircuitComponent * component);
+void addComponent(Circuit * circuit, CircuitComponent * component) {
+    if (circuit->numComponents >= circuit->allocatedComponents) {
+        int toAdd = 0;
+        while (circuit->numComponents >= circuit->allocatedComponents + toAdd) {
+            toAdd += ARRAY_SIZE_INCREMENT;
+        }
+
+        circuit->allocatedComponents += toAdd;
+        CircuitComponent ** newComponents = calloc(circuit->allocatedComponents, sizeof(CircuitComponent *));
+        if (newComponents == NULL) {
+            printf("ERROR: Get more ram, lol\n");
+            exit(-1);
+        }
+
+        for (int i = 0; i < circuit->numComponents; i++) {
+            newComponents[i] = circuit->components[i];
+        }
+
+        free(circuit->components);
+        circuit->components = newComponents;
+    }
+
+    circuit->components[circuit->numComponents] = component;
+    component->circuit = circuit;
+    component->componentIndex = circuit->numComponents;
+
+    circuit->numComponents++;
+}
+
+/**
+ * @brief Registers a new node with the circuit
+ * @param circuit Pointer to the circuit to register the node with
+ * @param node Pointer to the node to register with the circuit
+ * @return none
+ */
+void addNode(Circuit * circuit, CircuitNode * node) {
+    if (circuit->numNodes >= circuit->allocatedNodes) {
+        int toAdd = 0;
+        while (circuit->numNodes >= circuit->allocatedNodes + toAdd) {
+            toAdd += ARRAY_SIZE_INCREMENT;
+        }
+
+        circuit->allocatedNodes += toAdd;
+        CircuitNode ** newNodes = calloc(circuit->allocatedNodes, sizeof(CircuitNode *));
+        if (newNodes == NULL) {
+            printf("ERROR: Get more ram, lol\n");
+            exit(-1);
+        }
+
+        for (int i = 0; i < circuit->numNodes; i++) {
+            newNodes[i] = circuit->nodes[i];
+        }
+
+        free(circuit->nodes);
+        circuit->nodes = newNodes;
+    }
+
+    circuit->nodes[circuit->numNodes] = node;
+    node->circuit = circuit;
+    node->nodeIndex = circuit->numNodes;
+
+    circuit->numNodes++;
+}
 
 /**
  * @brief Creates a node linking two circuit components and adds it to the circuit
  * @param a Pointer to the first component 
  * @param b Pointer to the second component
- * @return none
+ * @return Pointer to the new connecting node
  */
-void linkComponents(CircuitComponent * a, CircuitComponent * b);
+CircuitNode * linkComponents(CircuitComponent * a, CircuitComponent * b) {
+    CircuitNode * node = _newNode();
+    assert(a->circuit != NULL);
+
+    addNode(a->circuit, node);
+
+    linkComponentToNode(a, node);
+    linkComponentToNode(b, node);
+
+    return node;
+}
 
 /**
  * @brief Link a single component and a single node together
@@ -159,7 +234,25 @@ void linkComponents(CircuitComponent * a, CircuitComponent * b);
  * @param b Pointer to the circuit node
  * @return none
  */
-void linkComponentToNode(CircuitComponent * a, CircuitNode * b);
+void linkComponentToNode(CircuitComponent * a, CircuitNode * b) {
+    if (a->allocatedConnections <= a->numConnections) {
+        int newSize = (a->numConnections - a->allocatedConnections) + ARRAY_SIZE_INCREMENT;
+        a->connections = expandIntArray(a->connections, newSize, a->allocatedConnections);
+        a->allocatedConnections = newSize;
+    }
+
+    if (b->allocatedComponents <= b->numComponents) {
+        int newSize = (b->numComponents - b->allocatedComponents) + ARRAY_SIZE_INCREMENT;
+        b->components = expandIntArray(b->components, newSize, b->allocatedComponents);
+        b->allocatedComponents = newSize;
+    }
+
+    a->connections[a->numConnections] = b->nodeIndex;
+    a->numConnections++;
+
+    b->components[b->numComponents] = a->componentIndex;
+    b->numComponents++;
+}
 
 // ======================================================================================================================================================================================================================
 // ========================= Circuit Checks ======================================================================================================================================================================
