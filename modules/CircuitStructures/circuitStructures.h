@@ -1,0 +1,200 @@
+#pragma once
+
+#include <stdbool.h>
+#include "./../../settings.h"
+
+#define ComponentIndex int
+#define NodeIndex int
+
+// ======================================================================================================================================================================================================================
+// ===================== Structure Definitions ===================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+// A single point in a circuit
+typedef struct {
+    float x;
+    float y;
+} CircuitPoint;
+
+// For rendering purposes only, a single line to be rendered in a circuit node
+typedef struct {
+    CircuitPoint a;
+    CircuitPoint b;
+} CircuitLine;
+
+// a single component in a circuit
+typedef struct {
+    int numConnections;
+    NodeIndex * connections;
+    void * circuit; // a pointer to the circuit that this component is a part of
+
+    float currentThrough;
+    float voltageAcross;
+
+
+    float resistance;
+    float capacitance;
+    float inductance;
+
+    bool isResistor; // what type of component this component is, determines some of the way it interacts with other circuits
+    bool isCapacitor;
+    bool isInductor;
+    bool isVoltageSource;
+    bool isClosed;
+
+    char label[LABEL_SIZE]; // a label for this part of the circuit
+
+
+    int componentIndex; // the index of the component in its circuit
+} CircuitComponent;
+
+// A node in a circuit
+typedef struct {
+    float V; // the voltage of this node in relation to the ground of its circuit
+
+    CircuitLine * renderLines;
+    int numRenderLines;
+    void * circuit; // a pointer to the circuit that this node is a part of
+
+    ComponentIndex * components;
+    int numComponents;
+
+    char label[LABEL_SIZE]; // a label for this part of the circuit
+
+    int nodeIndex; // the index of the node in its circuit
+} CircuitNode;
+
+typedef struct {
+    CircuitComponent ** components; // list with pointers to all of the components in this circuit
+    int numComponents;
+
+    CircuitNode ** nodes; // list with pointers to all of the nodes in this circuit
+    int numNodes;
+
+    CircuitNode * ground; // this will still be in the node list, this is just a pointer to its location in memory
+} Circuit;
+
+// ======================================================================================================================================================================================================================
+// ======================== ADT Initializers =====================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+/**
+ * @brief create a new circuit ADT. Does not assume ownership.
+ * @return a pointer to the newly created circuit
+ */
+Circuit * createNewCircuit();
+
+/** 
+ * @brief Create a blank, un-initialized, circuit component
+ * @return A pointer to the new component
+*/
+CircuitComponent * _newComponent();
+
+/** 
+ * @brief Create a blank, un-initialized, circuit Node
+ * @return A pointer to the new Node
+*/
+CircuitNode * _newNode();
+
+
+/**
+ * @brief Creates a new resistor circuit component and returns a pointer to it
+ * @param ohm The resistance of the new resistor in ohms
+ * @return A pointer to that resistor ADT
+ */
+CircuitComponent * createResistor(float ohm);
+
+/**
+ * @brief Creates a new inductor circuit component and returns a pointer to it
+ * @param henry The inductance of the new inductor in henries
+ * @return A pointer to that inductor ADT
+ */
+CircuitComponent * createInductor(float henry);
+
+/**
+ * @brief Creates a new capacitor circuit component and returns a pointer to it
+ * @param faraday The capacitance of the new capacitor in faradays
+ * @return A pointer to that capacitor ADT
+ */
+CircuitComponent * createCapacitor(float faraday);
+
+// ======================================================================================================================================================================================================================
+// ========================== ADT Free-ers =======================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+
+/**
+ * @brief Frees all memory associated with a circuit and its components
+ * @return none
+ */
+void freeCircuit();
+
+/**
+ * @brief Frees all memory associated with a component
+ * @return none
+ */
+void freeComponent();
+
+/**
+ * @brief Frees all memory associated with a node
+ * @return none
+ */
+void freeNode();
+
+// ======================================================================================================================================================================================================================
+// ======================== Circuit Linkers ======================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+
+/**
+ * @brief Registers a new component with the circuit
+ * @param circuit Pointer to the circuit to register the component with
+ * @param component Pointer to the component to register with the circuit
+ * @return none
+ */
+void addComponent(Circuit * circuit, CircuitComponent * component);
+
+/**
+ * @brief Creates a node linking two circuit components and adds it to the circuit
+ * @param a Pointer to the first component 
+ * @param b Pointer to the second component
+ * @return none
+ */
+void linkComponents(CircuitComponent * a, CircuitComponent * b);
+
+/**
+ * @brief Link a single component and a single node together
+ * @param a Pointer to the circuit component
+ * @param b Pointer to the circuit node
+ * @return none
+ */
+void linkComponentToNode(CircuitComponent * a, CircuitNode * b);
+
+// ======================================================================================================================================================================================================================
+// ========================= Circuit Checks ======================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+/**
+ * @brief Check if a circuit has a valid loop in it
+ * @param circuit Pointer to the circuit to check
+ * @return true or false, depending on whether the circuit is valid
+ */
+bool checkIsValidCircuit(Circuit * circuit);
+
+/**
+ * @brief Remove and free any components in a circuit that are not connected to anything
+ * @param circuit Pointer to the circuit to cull
+ * @return none
+ */
+void _cullCircuit(Circuit * circuit);
+
+// ======================================================================================================================================================================================================================
+// ============================== Misc ===========================================================================================================================================================================
+// ======================================================================================================================================================================================================================
+
+/**
+ * @brief Procedurally name all nodes in a circuit
+ * @param circuit Pointer to the circuit
+ * @return none
+ */
+void nameAllNodes(Circuit * circuit);

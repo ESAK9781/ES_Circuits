@@ -1,0 +1,2 @@
+sh comp.sh
+./OpenCircuits
