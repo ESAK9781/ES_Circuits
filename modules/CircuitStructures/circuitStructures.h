@@ -201,11 +201,18 @@ void linkComponentToNode(CircuitComponent * a, CircuitNode * b);
 // ======================================================================================================================================================================================================================
 
 /**
- * @brief Check if a circuit has a valid loop in it
+ * @brief Check if a circuit has a valid loop in it and isn't shorted
  * @param circuit Pointer to the circuit to check
  * @return true or false, depending on whether the circuit is valid
  */
 bool checkIsValidCircuit(Circuit * circuit);
+
+/**
+ * @brief Check if a circuit is shorted anywhere
+ * @param circuit Pointer to the circuit to check
+ * @return true or false, depending on whether the circuit is shorted
+ */
+bool checkIsShorted(Circuit * circuit);
 
 /**
  * @brief Remove and free any elements in a circuit that are not connected to anything

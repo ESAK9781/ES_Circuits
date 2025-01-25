@@ -89,6 +89,18 @@ CircuitComponent * createCapacitor(float faraday) {
     return out;
 }
 
+/**
+ * @brief Creates a new resistor circuit component and returns a pointer to it
+ * @param v The voltage of the new source in volts
+ * @return A pointer to that source ADT
+ */
+CircuitComponent * createSourceDC(float v) {
+    CircuitComponent * out = _newComponent();
+    out->isVoltageSource = true;
+    out->voltageAcross = v;
+    return out;
+}
+
 // ======================================================================================================================================================================================================================
 // ========================== ADT Free-ers =======================================================================================================================================================================
 // ======================================================================================================================================================================================================================
@@ -260,18 +272,31 @@ void linkComponentToNode(CircuitComponent * a, CircuitNode * b) {
 // ======================================================================================================================================================================================================================
 
 /**
- * @brief Check if a circuit has a valid loop in it
+ * @brief Check if a circuit has a valid loop in it and isn't shorted
  * @param circuit Pointer to the circuit to check
  * @return true or false, depending on whether the circuit is valid
  */
-bool checkIsValidCircuit(Circuit * circuit);
+bool checkIsValidCircuit(Circuit * circuit) {
+    return false;
+}
+
+/**
+ * @brief Check if a circuit is shorted anywhere
+ * @param circuit Pointer to the circuit to check
+ * @return true or false, depending on whether the circuit is shorted
+ */
+bool checkIsShorted(Circuit * circuit) {
+    return false;
+}
 
 /**
  * @brief Remove and free any elements in a circuit that are not connected to anything
  * @param circuit Pointer to the circuit to cull
  * @return none
  */
-void _cullCircuit(Circuit * circuit);
+void _cullCircuit(Circuit * circuit) {
+
+}
 
 // ======================================================================================================================================================================================================================
 // ============================== Misc ===========================================================================================================================================================================
