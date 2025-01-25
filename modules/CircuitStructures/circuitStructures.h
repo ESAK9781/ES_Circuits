@@ -70,6 +70,8 @@ typedef struct {
 } CircuitNode;
 
 typedef struct {
+    char name[LABEL_SIZE];
+
     CircuitComponent ** components; // list with pointers to all of the components in this circuit
     int numComponents;
     int allocatedComponents;
@@ -245,3 +247,11 @@ void nameAllNodes(Circuit * circuit);
  * @return none
  */
 void nameAllElements(Circuit * circuit);
+
+/**
+ * @brief Name a circuit
+ * @param circuit Pointer to the circuit to name
+ * @param name String to name the circuit as
+ * @return none
+ */
+void nameCircuit(Circuit * circuit, char * name);

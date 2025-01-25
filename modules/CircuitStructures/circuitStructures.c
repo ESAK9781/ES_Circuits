@@ -358,3 +358,13 @@ void nameAllElements(Circuit * circuit) {
     nameAllComponents(circuit);
     nameAllNodes(circuit);
 }
+
+/**
+ * @brief Name a circuit
+ * @param circuit Pointer to the circuit to name
+ * @param name String to name the circuit as
+ * @return none
+ */
+void nameCircuit(Circuit * circuit, char * name) {
+    strncpy(circuit->name, name, LABEL_SIZE);
+}

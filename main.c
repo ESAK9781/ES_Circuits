@@ -7,6 +7,7 @@
 
 int main(int argC, char ** args) {
     Circuit * circuit = createNewCircuit();
+    nameCircuit(circuit, "Test Circuit");
 
     CircuitComponent * source = createSourceDC(5.f);
     CircuitComponent * resistor = createResistor(1000.f);
@@ -19,7 +20,8 @@ int main(int argC, char ** args) {
 
     nameAllElements(circuit);
 
-    printf("Resistor: %s    ----    Source: %s\n", resistor->label, source->label);
+    printf("Circuit: %s\n", circuit->name);
+    printf("Resistor: %s    ----    Source: %s\n------------------------------------------------------\n", resistor->label, source->label);
     printf("Successful completion!\n\n");
 
     return 1;
