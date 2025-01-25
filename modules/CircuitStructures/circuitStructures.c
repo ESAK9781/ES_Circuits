@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 #include "circuitStructures.h"
 #include "../Util/util.h"
@@ -266,7 +267,7 @@ void linkComponentToNode(CircuitComponent * a, CircuitNode * b) {
 bool checkIsValidCircuit(Circuit * circuit);
 
 /**
- * @brief Remove and free any components in a circuit that are not connected to anything
+ * @brief Remove and free any elements in a circuit that are not connected to anything
  * @param circuit Pointer to the circuit to cull
  * @return none
  */
@@ -277,9 +278,58 @@ void _cullCircuit(Circuit * circuit);
 // ======================================================================================================================================================================================================================
 
 /**
- * @brief Procedurally name all nodes in a circuit
+ * @brief Procedurally name all Components in a circuit
  * @param circuit Pointer to the circuit
  * @return none
  */
-void nameAllNodes(Circuit * circuit);
+void nameAllComponents(Circuit * circuit) {
+    int resistorNum = 1;
+    int capacitorNum = 1;
+    int inductorNum = 1;
 
+
+    for (int i = 0; i < circuit->numComponents; i++) {
+        CircuitComponent * component = circuit->components[i];
+        if (component->isCapacitor) {
+            sprintf(component->label, "C%d", capacitorNum);
+            capacitorNum++;
+        } else if (component->isInductor) {
+            sprintf(component->label, "I%d", inductorNum);
+            inductorNum++;
+        } else if (component->isResistor) {
+            sprintf(component->label, "R%d", resistorNum);
+            resistorNum++;
+        } else if (component->isVoltageSource) {
+            sprintf(component->label, "%.1fV", component->voltageAcross);
+        }
+    }
+}
+
+/**
+ * @brief Procedurally name all Nodes in a circuit
+ * @param circuit Pointer to the circuit
+ * @return none
+ */
+void nameAllNodes(Circuit * circuit) {
+    char currentName = 'A';
+    for (int i = 0; i < circuit->numNodes; i++) {
+        if (currentName > 'Z') {
+            printf("WARNING: Too many nodes. Node naming is only supported up to 26 nodes.\n");
+        }
+
+    
+        CircuitNode * node = circuit->nodes[i];
+        sprintf(node->label, "%c", currentName);
+        currentName++;
+    }
+}
+
+/**
+ * @brief Procedurally name all elements in a circuit
+ * @param circuit Pointer to the circuit
+ * @return none
+ */
+void nameAllElements(Circuit * circuit) {
+    nameAllComponents(circuit);
+    nameAllNodes(circuit);
+}

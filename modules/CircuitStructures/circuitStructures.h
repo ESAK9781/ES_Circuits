@@ -125,6 +125,14 @@ CircuitComponent * createInductor(float henry);
  */
 CircuitComponent * createCapacitor(float faraday);
 
+
+/**
+ * @brief Creates a new resistor circuit component and returns a pointer to it
+ * @param v The voltage of the new source in volts
+ * @return A pointer to that source ADT
+ */
+CircuitComponent * createSourceDC(float v);
+
 // ======================================================================================================================================================================================================================
 // ========================== ADT Free-ers =======================================================================================================================================================================
 // ======================================================================================================================================================================================================================
@@ -200,7 +208,7 @@ void linkComponentToNode(CircuitComponent * a, CircuitNode * b);
 bool checkIsValidCircuit(Circuit * circuit);
 
 /**
- * @brief Remove and free any components in a circuit that are not connected to anything
+ * @brief Remove and free any elements in a circuit that are not connected to anything
  * @param circuit Pointer to the circuit to cull
  * @return none
  */
@@ -211,8 +219,22 @@ void _cullCircuit(Circuit * circuit);
 // ======================================================================================================================================================================================================================
 
 /**
- * @brief Procedurally name all nodes in a circuit
+ * @brief Procedurally name all Components in a circuit
+ * @param circuit Pointer to the circuit
+ * @return none
+ */
+void nameAllComponents(Circuit * circuit);
+
+/**
+ * @brief Procedurally name all Nodes in a circuit
  * @param circuit Pointer to the circuit
  * @return none
  */
 void nameAllNodes(Circuit * circuit);
+
+/**
+ * @brief Procedurally name all elements in a circuit
+ * @param circuit Pointer to the circuit
+ * @return none
+ */
+void nameAllElements(Circuit * circuit);
