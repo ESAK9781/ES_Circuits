@@ -70,6 +70,7 @@ CircuitComponent * createInductor(float henry) {
     CircuitComponent * out = _newComponent();
     out->isInductor = true;
     out->inductance = henry;
+    return out;
 }
 
 /**
@@ -81,30 +82,55 @@ CircuitComponent * createCapacitor(float faraday) {
     CircuitComponent * out = _newComponent();
     out->isCapacitor = true;
     out->capacitance = faraday;
+    return out;
 }
 
 // ======================================================================================================================================================================================================================
 // ========================== ADT Free-ers =======================================================================================================================================================================
 // ======================================================================================================================================================================================================================
 
-
 /**
  * @brief Frees all memory associated with a circuit and its components
+ * @param circuit Pointer to the circuit to free
  * @return none
  */
-void freeCircuit();
+void freeCircuit(Circuit * circuit) {
+    for (int i = 0; i < circuit->numComponents; i++) {
+        freeComponent(circuit->components[i]);
+    }
+
+    free(circuit->components);
+
+    for (int i = 0; i < circuit->numNodes; i++) {
+        freeNode(circuit->nodes[i]);
+    }
+
+    free(circuit->nodes);
+
+    free(circuit);
+}
 
 /**
  * @brief Frees all memory associated with a component
+ * @param component Pointer to the component to free
  * @return none
  */
-void freeComponent();
+void freeComponent(CircuitComponent * component) {
+    free(component->connections);
+    free(component);
+}
 
 /**
  * @brief Frees all memory associated with a node
+ * @param node Pointer to the node to free
  * @return none
  */
-void freeNode();
+void freeNode(CircuitNode * node) {
+    free(node->renderLines);
+    free(node->components);
+    free(node);
+}
+
 
 // ======================================================================================================================================================================================================================
 // ======================== Circuit Linkers ======================================================================================================================================================================

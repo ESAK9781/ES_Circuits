@@ -125,21 +125,24 @@ CircuitComponent * createCapacitor(float faraday);
 
 /**
  * @brief Frees all memory associated with a circuit and its components
+ * @param circuit Pointer to the circuit to free
  * @return none
  */
-void freeCircuit();
+void freeCircuit(Circuit * circuit);
 
 /**
  * @brief Frees all memory associated with a component
+ * @param component Pointer to the component to free
  * @return none
  */
-void freeComponent();
+void freeComponent(CircuitComponent * component);
 
 /**
  * @brief Frees all memory associated with a node
+ * @param node Pointer to the node to free
  * @return none
  */
-void freeNode();
+void freeNode(CircuitNode * node);
 
 // ======================================================================================================================================================================================================================
 // ======================== Circuit Linkers ======================================================================================================================================================================
