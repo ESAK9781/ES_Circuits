@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "util.h"
 
@@ -17,4 +18,13 @@ int * expandIntArray(int * array, int desiredSize, int currentSize) {
 
     free(array);
     return out;
+}
+
+void * expandArray(void * array, size_t elementSize, int desiredSize, int currentSize) {
+    void * newArray = calloc(desiredSize, elementSize);
+
+    memcpy(newArray, array, elementSize * currentSize);
+    free(array);
+
+    return newArray;
 }

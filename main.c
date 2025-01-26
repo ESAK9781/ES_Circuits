@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "./modules/CircuitStructures/circuitStructures.h"
+#include "./modules/MatrixMath/matrices.h"
 
 
 

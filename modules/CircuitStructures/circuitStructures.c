@@ -28,7 +28,7 @@ Circuit * createNewCircuit() {
 CircuitComponent * _newComponent() {
     CircuitComponent * out = malloc(sizeof(CircuitComponent));
 
-    out->capacitance = -1;
+    out->capacitance = -1; // -1 indicates that this has not yet been calculated
     out->inductance = -1;
     out->resistance = -1;
     
