@@ -23,6 +23,11 @@ int * expandIntArray(int * array, int desiredSize, int currentSize) {
 void * expandArray(void * array, size_t elementSize, int desiredSize, int currentSize) {
     void * newArray = calloc(desiredSize, elementSize);
 
+    if (newArray == NULL) {
+        printf("ERROR: Bro, wtf. Buy some ram.\n");
+        exit(-1);
+    }
+
     memcpy(newArray, array, elementSize * currentSize);
     free(array);
 
